@@ -77,6 +77,32 @@ class Machine: # AFD = (Q, Σ, δ, q0, F)
             
         return self.print_result()
 
+    def run_step(self):
+        ''' Roda um passo da maquina e retorna se existe um proximo passo '''
+        
+        if self.q is None or self.w is None:
+            return False
+        
+        c = self.fita[self.current]
+            
+        transition = self.q.transition(c)
+        
+        if transition is None:
+            return False
+        
+        else:
+            self.q = transition.state
+            self.fita[self.current] = transition.edge.w
+            
+            if transition.edge.d in ('D', '>'):
+                self.current += 1
+            elif transition.edge.d in ('E', '<'):
+                self.current -= 1
+            else:
+                return False
+            
+        return True
+
     def print_result(self):
         ''' Print and Return True (ok) or False (no ok) '''
         

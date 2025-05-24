@@ -1,5 +1,5 @@
 @Programa Fonte UFC
-#coloca x e y na palavra
+#coloca y e X na palavra
 fita 101001
 init qp
 accept qf

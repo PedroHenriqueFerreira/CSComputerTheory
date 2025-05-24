@@ -1,6 +1,8 @@
 from State import State
 from Machine import Machine
 
+from UI import UI
+
 from sys import argv
 
 def read(f: str): # Lê de arquivo
@@ -13,13 +15,13 @@ def read(f: str): # Lê de arquivo
     
     with open(f) as file:
         for line in file.readlines():
-            if line.strip() == '' or line.startswith(('@', '#')):
+            if line.strip() == '' or line.startswith(('@', '#', '//')):
                 continue
             
             data = line.strip().split(' ')
             
             if data[0] == 'fita':
-                fita = data[1]
+                fita = data[1] if len(data) > 1 else ''
             elif data[0] == 'init':
                 estados[data[1]] = State(data[1])
                 q0 = estados[data[1]]
@@ -38,8 +40,7 @@ def read(f: str): # Lê de arquivo
                     
                 estados[qi].addTransition(estados[qj], r, w, d)
     
-    mt = Machine(q0, fita, len(fita))
-    mt.run()
+    UI(Machine(q0, fita, 100))
 
 def teste_anbn(w: str): # Livre de contexto
     print("{ a^nb^n | n>=0 }")
