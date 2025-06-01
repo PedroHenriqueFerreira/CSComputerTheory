@@ -1,6 +1,4 @@
-@Programa Fonte UFC
-# Multiplos de 3
-fita 10
+tape 10
 init q0
 accept q0
 

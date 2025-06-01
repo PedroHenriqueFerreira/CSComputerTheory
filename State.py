@@ -1,5 +1,3 @@
-from typing import Literal
-
 from Edge import Edge
 from Transition import Transition
 
@@ -22,8 +20,8 @@ class State:
     def setIsFinal(self): 
         self.isFinal = True
 
-    def addTransition(self, state: 'State', r: str, w: str, d: Literal['D', '>', 'E', '<']):
-        return self.addTransitions(state, Edge(r, w, d))
+    def addTransition(self, state: 'State', r: str | list[str], w: str | list[str], d: str | list[str]):
+        return self.addTransitions(state, Edge(list(r), list(w), list(d)))
 
     def addTransitions(self, state: 'State', *edges: Edge):
         for edge in edges:
@@ -34,7 +32,7 @@ class State:
             
         return self
 
-    def transition(self, r: str) -> Transition:
+    def transition(self, r: list[str]) -> Transition:
         for t in self.transitions:
             if t.edge.r == r:
                 return t

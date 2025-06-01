@@ -1,4 +1,4 @@
-fita 1100
+tape 1100
 init q0
 accept qf
 

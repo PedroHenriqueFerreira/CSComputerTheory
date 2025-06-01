@@ -1,11 +1,26 @@
-# init q1
-# accept q2
-# 1 = start
-# 0 1 0 1 000 1 0 1 00 11 = q1, 0, q3, 0, R
-# 0 1 00 1 0 1 00 1 00 11 = q1, 1, q1, 1, R
-# 000 1 0 1 0000 1 0 1 00 11 = q3, 0, q4, 0, R
-# 000 1 00 1 0 1 00 1 00 11 = q3, 1, q1, 1, R
-# 0000 1 0 1 0000 1 0 1 00 11 = q4, 0, q4, 0, R
-# 0000 1 00 1 0000 1 00 1 00 11 = q4, 1, q4, 1, R
-# 0000 1 000 1 00 1 000 1 00 111 = q4, _, q2, _, R
-# fita 1001 
+tape 101010101001101001010010011010001001000101111001
+#               ^	          ^               ^
+#               |             |               |
+
+init qStart
+accept qAccept
+
+
+qStart,0,_,_,qStart,0,_,_,>,-,-
+qStart,1,_,_,qSearch1,1,_,_,>,-,-
+qSearch1,0,_,_,qStart,0,_,_,>,-,-
+qSearch1,1,_,_,qSearch11,1,_,_,>,-,-
+qSearch11,0,_,_,qStart,0,_,_,>,-,-
+qSearch11,1,_,_,qSearch111,1,_,_,>,-,-
+qSearch111,0,_,_,qSearch111,0,0,_,>,>,-
+qSearch111,1,_,_,qSearch111,1,1,_,>,>,-
+qSearch111,_,_,_,qClearTape1,_,_,_,<,<,-
+qClearTape1,0,0,_,qClearTape1,_,0,_,<,<,-
+qClearTape1,1,1,_,qClearTape1,_,1,_,<,<,-
+qClearTape1,0,_,_,qBackToStart,0,_,_,<,-,-
+qClearTape1,1,_,_,qBackToStart,1,_,_,<,-,-
+qBackToStart,0,_,_,qBackToStart,0,_,_,<,-,-
+qBackToStart,1,_,_,qBackToStart,1,_,_,<,-,-
+qBackToStart,_,_,_,qSetState,_,_,0,-,-,<
+qSetState,_,_,_,qCompute,_,_,_,>,>,>
+qCompute,1,1,0,qCompute,1,1,0,>,-,-

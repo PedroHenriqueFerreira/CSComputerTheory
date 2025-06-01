@@ -1,6 +1,4 @@
-@Programa Fonte UFC
-# Coloca a^nb^n na palavra
-fita aaabbb
+tape aaabbb
 init q0
 accept qf
 

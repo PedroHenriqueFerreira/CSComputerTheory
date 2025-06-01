@@ -1,4 +1,4 @@
-fita 0000
+tape 0000
 init q0
 accept qf
 

@@ -2,8 +2,8 @@ from tkinter import Tk, Canvas
 
 from Machine import Machine
 
-CANVAS_WIDTH = 700
-CANVAS_HEIGHT = 300
+CANVAS_WIDTH = 800
+CANVAS_HEIGHT = 200
 CANVAS_COLOR = '#d8dee9'
 
 BLOCK_SIZE = 60
@@ -15,10 +15,10 @@ BLOCK_FAIL_COLOR = '#d07087'
 BLOCK_SUCESS_COLOR = '#8fbcbb'
 
 MOVE_SIZE = 3 # Pixels que sera movido a cada passo
-MOVE_DELAY = 16 # Delay em milissegundos
+MOVE_DELAY = 5 # Delay em milissegundos
 
 INITIAL_DELAY = 500 # Delay inicial antes de comecar a rodar a maquina
-STEP_DELAY = 100 # Delay entre cada passo da maquina
+STEP_DELAY = 0 # Delay entre cada passo da maquina
 
 POINTER_WIDTH = BLOCK_SIZE / 2
 POINTER_HEIGHT = BLOCK_SIZE / 3
@@ -110,16 +110,12 @@ class State:
         
         self.canvas.itemconfig(self.text, text=self.name)
 
-class UI:
-    def __init__(self, machine: Machine):
+class Tape:
+    def __init__(self, canvas: Canvas, machine: Machine, i: int):
+        self.canvas = canvas
         self.machine = machine
+        self.i = i
         
-        self.root = Tk()
-        self.root.title('Máquina de Turing')
-        
-        self.canvas = Canvas(self.root, width=CANVAS_WIDTH, height=CANVAS_HEIGHT, bg=CANVAS_COLOR)
-        self.canvas.pack()
-    
         self.blocks: list[Block] = []
         self.pointer: Pointer = None
         self.state: State = None
@@ -127,22 +123,24 @@ class UI:
         self.start()
         self.draw()
         
-        self.root.after(INITIAL_DELAY, self.step)
-        self.root.mainloop()
-
     def start(self):
-        total_width = len(self.machine.fita) * BLOCK_SIZE + (len(self.machine.fita) - 1) * BLOCK_PADDING
+        tape = self.machine.tapes[self.i]
+        position = self.machine.positions[self.i]
+        
+        total_width = len(tape) * BLOCK_SIZE + (len(tape) - 1) * BLOCK_PADDING
     
         self.x = (CANVAS_WIDTH - total_width) / 2
         self.y = (CANVAS_HEIGHT - BLOCK_SIZE) / 2
         
-        self.x0 = self.x + self.machine.current * (BLOCK_SIZE + BLOCK_PADDING) + BLOCK_SIZE / 2
+        self.x0 = self.x + position * (BLOCK_SIZE + BLOCK_PADDING) + BLOCK_SIZE / 2
         
         self.pointer_y = self.y + BLOCK_SIZE
         self.state_y = self.pointer_y + POINTER_HEIGHT + 2 * POINTER_PADDING
 
     def draw(self):
-        for i, value in enumerate(self.machine.fita):
+        tape = self.machine.tapes[self.i]
+        
+        for i, value in enumerate(tape):
             self.blocks.append(
                 Block(
                     self.canvas, 
@@ -154,11 +152,7 @@ class UI:
             
         self.pointer = Pointer(self.canvas, self.x0, self.pointer_y)
         self.state = State(self.canvas, self.machine.q.name, self.x0, self.state_y)
-        
-    def move(self, direction: int):
-        for block in self.blocks:
-            block.move(direction)          
-    
+
     def success(self):
         for block in self.blocks:
             self.canvas.itemconfig(block.rectangle, fill=BLOCK_SUCESS_COLOR)
@@ -174,16 +168,50 @@ class UI:
         self.canvas.itemconfig(self.pointer.polygon, fill=BLOCK_FAIL_COLOR)
         
         self.state.rename(f'{self.machine.q.name} (rejeitado)')
-
+    
+    def move(self, direction: int):
+        for block in self.blocks:
+            block.move(direction) 
+    
+class UI:
+    def __init__(self, machine: Machine):
+        self.machine = machine
+        
+        self.root = Tk()
+        self.root.resizable(False, False)
+        self.root.title('Máquina de Turing')
+        
+        self.tapes: list[Tape] = []
+        
+        for i in range(self.machine.n_tapes):
+            canvas = Canvas(self.root, width=CANVAS_WIDTH, height=CANVAS_HEIGHT, bg=CANVAS_COLOR)
+            canvas.pack()
+            
+            self.tapes.append(Tape(canvas, self.machine, i))
+    
+        self.root.after(INITIAL_DELAY, self.step)
+        self.root.mainloop()
+    
+    def success(self):
+        for tape in self.tapes:
+            tape.success()
+        
+    def fail(self):
+        for tape in self.tapes:
+            tape.fail()
+    
     def step(self):
-        prev_current = self.machine.current
+        prev_positions = self.machine.positions.copy()
         has_next = self.machine.run_step()
-        next_current = self.machine.current
+        next_positions = self.machine.positions.copy()
         
-        direction = prev_current - next_current
-        
-        self.state.rename(self.machine.q.name)
-        self.blocks[prev_current].rename(self.machine.fita[prev_current])
+        directions = [prev - next for prev, next in zip(prev_positions, next_positions)]
+            
+        for tape in self.tapes:
+            tape.state.rename(self.machine.q.name)
+            
+        for i in range(self.machine.n_tapes):
+            self.tapes[i].blocks[prev_positions[i]].rename(self.machine.tapes[i][prev_positions[i]])
         
         if not has_next:
             if self.machine.q.isFinal:
@@ -191,8 +219,12 @@ class UI:
             else:
                 self.fail()
         else:
-            for i in range((BLOCK_SIZE + BLOCK_PADDING) // MOVE_SIZE):
-                self.canvas.after((i + 1) * MOVE_DELAY, self.move, MOVE_SIZE * direction)
-            
-            self.canvas.after((i + 1) * MOVE_DELAY + STEP_DELAY, self.step)
+            for tape, direction in zip(self.tapes, directions):
+                if direction == 0:
+                    continue
+                
+                for i in range((BLOCK_SIZE + BLOCK_PADDING) // MOVE_SIZE):
+                    tape.canvas.after((i + 1) * MOVE_DELAY, tape.move, MOVE_SIZE * direction)
+                
+            self.root.after((i + 1) * MOVE_DELAY + STEP_DELAY, self.step)
     

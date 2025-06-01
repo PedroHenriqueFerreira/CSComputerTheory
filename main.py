@@ -5,42 +5,48 @@ from UI import UI
 
 from sys import argv
 
-def read(f: str): # Lê de arquivo
-    print(f" arquivo {f} ".center(50, '*'))
+def read(n_tapes: int, instance: str): # Lê de arquivo
+    print(f" Instancia {instance} ".center(50, '*'))
     
-    q0 = None
-    fita = ''
+    q = None
+    tape = ''
     
-    estados: dict[str, State] = {}
+    states: dict[str, State] = {}
     
-    with open(f) as file:
+    with open(instance) as file:
         for line in file.readlines():
-            if line.strip() == '' or line.startswith(('@', '#', '//')):
+            if line.strip() == '' or line.strip().startswith(('@', '#', '//')):
                 continue
             
             data = line.strip().split(' ')
             
-            if data[0] == 'fita':
-                fita = data[1] if len(data) > 1 else ''
+            if data[0] == 'tape':
+                tape = data[1] if len(data) > 1 else ''
             elif data[0] == 'init':
-                estados[data[1]] = State(data[1])
-                q0 = estados[data[1]]
+                states[data[1]] = State(data[1])
+                q = states[data[1]]
             elif data[0] == 'accept':
-                if data[1] not in estados:
-                    estados[data[1]] = State(data[1])
-                estados[data[1]].setIsFinal()
+                if data[1] not in states:
+                    states[data[1]] = State(data[1])
+                states[data[1]].setIsFinal()
             else:
-                qi, r, qj, w, d = data[0].split(',')
+                values = data[0].split(',')
                 
-                if qi not in estados:
-                    estados[qi] = State(qi)
+                qi = values[0]
+                r = values[1:n_tapes + 1]
+                qj = values[n_tapes + 1]
+                w = values[n_tapes + 2:n_tapes * 2 + 2]
+                d = values[n_tapes * 2 + 2:]
+                
+                if qi not in states:
+                    states[qi] = State(qi)
                     
-                if qj not in estados:
-                    estados[qj] = State(qj)
+                if qj not in states:
+                    states[qj] = State(qj)
                     
-                estados[qi].addTransition(estados[qj], r, w, d)
+                states[qi].addTransition(states[qj], r, w, d)
     
-    UI(Machine(q0, fita, 100))
+    UI(Machine(q, tape, n_tapes=n_tapes, size=200, blank='_'))
 
 def teste_anbn(w: str): # Livre de contexto
     print("{ a^nb^n | n>=0 }")
@@ -72,7 +78,11 @@ def teste_anbn(w: str): # Livre de contexto
     q3.addTransition(q3, 'B', 'B', 'E')
     q3.addTransition(qf, '_', '_', 'D')
 
-    mt = Machine(q0, w, 20)
+    mt = Machine(q0, w, n_tapes=1, size=20, blank='_')
+    
+    print(mt.tapes)
+    print(mt.positions)
+    
     mt.run()
 
 def teste_y_x(w: str): # Regular
@@ -92,17 +102,17 @@ def teste_y_x(w: str): # Regular
     q2.addTransition(q2, '1', 'b', 'D')
     q2.addTransition(q1, '0', 'a', 'D')
 
-    mt = Machine(q0, w, 20)
+    mt = Machine(q0, w, n_tapes=1, size=20, blank='_')
     mt.run()
 
 if __name__ == "__main__":
     if len(argv) > 1:
-        read(argv[1])
+        read(int(argv[1]), argv[2])
     else:
         teste_anbn('')
         teste_anbn('ab')
         teste_anbn('aabb')
-        teste_anbn('aaaabbb')
+        teste_anbn('aaabbb')
         teste_anbn('aaaabbbbb')
         teste_anbn('ababab')
         teste_anbn('aaaaaa')

@@ -1,6 +1,4 @@
-@Programa Fonte UFC
-#coloca y e X na palavra
-fita 101001
+tape 101001
 init qp
 accept qf
 

@@ -1,5 +1,5 @@
 class Edge:
-    def __init__(self, r: str, w: str, d: str):
+    def __init__(self, r: list[str], w: list[str], d: list[str]):
         self.r = r
         self.w = w
         self.d = d
