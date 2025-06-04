@@ -14,7 +14,7 @@ BLOCK_FONT_COLOR = '#d8dee9'
 BLOCK_FAIL_COLOR = '#d07087'
 BLOCK_SUCESS_COLOR = '#8fbcbb'
 
-MOVE_SIZE = 6 # Pixels que sera movido a cada passo
+MOVE_SIZE = 66 # Pixels que sera movido a cada passo
 MOVE_DELAY = 15 # Delay em milissegundos
 
 INITIAL_DELAY = 500 # Delay inicial antes de comecar a rodar a maquina
@@ -201,8 +201,6 @@ class UI:
             tape.fail()
     
     def step(self):
-        print(self.machine.tapes)
-        
         prev_positions = self.machine.positions.copy()
         has_next = self.machine.run_step()
         next_positions = self.machine.positions.copy()

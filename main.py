@@ -18,7 +18,7 @@ def read(n_tapes: int, instance: str): # Lê de arquivo
             if line.strip() == '' or line.strip().startswith(('@', '#', '//')):
                 continue
             
-            data = line.strip().split(' ')
+            data = line.split('@')[0].split('#')[0].split('//')[0].strip().split(' ')
             
             if data[0] == 'tape':
                 tape = data[1] if len(data) > 1 else ''
