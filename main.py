@@ -111,7 +111,7 @@ def teste_y_x(w: str): # Regular
 
 if __name__ == "__main__":
     if len(argv) > 1:
-        read(argv[1], argv[2])
+        read(argv[1], argv[2] if len(argv) == 3 else 'normal')
     else:
         teste_anbn('')
         teste_anbn('ab')
