@@ -4,6 +4,11 @@ from Machine import Machine
 from UI import UI
 
 from sys import argv
+from string import printable
+
+chars = [char for char in printable.strip() if char not in ('@', '&', ',')]
+
+print(chars)
 
 def read(instance: str, mode: str): # Lê de arquivo
     print(f" Instancia {instance} ".center(50, '*'))
@@ -17,10 +22,10 @@ def read(instance: str, mode: str): # Lê de arquivo
     
     with open(instance) as file:
         for line in file.readlines():
-            if line.strip() == '' or line.strip().startswith(('@', '#', '//')):
+            if line.strip() == '' or line.strip().startswith('#'):
                 continue
             
-            data = line.split('@')[0].split('#')[0].split('//')[0].strip().split(' ')
+            data = line.strip().split(' ')
             
             if data[0] == 'tape':
                 tape = data[1] if len(data) > 1 else ''
@@ -50,8 +55,33 @@ def read(instance: str, mode: str): # Lê de arquivo
                     
                 if qj not in states:
                     states[qj] = State(qj)
+                
+                rw = f"{' '.join(r)} {' '.join(w)}"
+                
+                if '@' in rw:
+                    for c in chars:            
+                        states[qi].addTransition(
+                            states[qj], 
+                            [c if i == '@' else i for i in r],
+                            [c if i == '@' else i for i in w],
+                            d
+                        )
+                        
+                elif '&' in rw:
+                    exclude = [value.split('&')[1] for value in rw.split(' ') if '&' in value][0]
                     
-                states[qi].addTransition(states[qj], r, w, d)
+                    for c in chars:
+                        if c == exclude:
+                            continue
+                        
+                        states[qi].addTransition(
+                            states[qj], 
+                            [c if i == f'&{exclude}' else i for i in r],
+                            [c if i == f'&{exclude}' else i for i in w],
+                            d
+                        )
+                else:
+                    states[qi].addTransition(states[qj], r, w, d)
     
     UI(Machine(q, tape, n_tapes=n_tapes, size=500, blank='_'), mode=mode)
 

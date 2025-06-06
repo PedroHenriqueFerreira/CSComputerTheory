@@ -17,7 +17,7 @@ BLOCK_SUCESS_COLOR = '#8fbcbb'
 MODE = {
     'fast': {
         'MOVE_SIZE': 66, # Pixels que sera movido a cada passo
-        'MOVE_DELAY': 0, # Delay em milissegundos
+        'MOVE_DELAY': 8, # Delay em milissegundos
         'STEP_DELAY': 8, # Delay entre cada passo da maquina
         'INITIAL_DELAY': 1000 # Delay inicial antes de comecar a rodar a maquina 
     },
