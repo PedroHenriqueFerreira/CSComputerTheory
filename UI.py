@@ -15,10 +15,10 @@ BLOCK_FAIL_COLOR = '#d07087'
 BLOCK_SUCESS_COLOR = '#8fbcbb'
 
 MOVE_SIZE = 66 # Pixels que sera movido a cada passo
-MOVE_DELAY = 15 # Delay em milissegundos
+MOVE_DELAY = 0 # Delay em milissegundos
 
 INITIAL_DELAY = 500 # Delay inicial antes de comecar a rodar a maquina
-STEP_DELAY = 50 # Delay entre cada passo da maquina
+STEP_DELAY = 20 # Delay entre cada passo da maquina
 
 POINTER_WIDTH = BLOCK_SIZE / 2
 POINTER_HEIGHT = BLOCK_SIZE / 3

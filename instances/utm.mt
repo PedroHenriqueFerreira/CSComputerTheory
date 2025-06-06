@@ -1,10 +1,12 @@
-# 01010100100110100101010011
-tape 00100010010001001111001
+# tape 01010100100110100101010011010001001000101111001 # COMPLEMENTO
+# tape 010101010011010001001000101110000000 # CHECA0
+
 
 init qStart
 accept qAccept
 
 # Preprocessing
+
 qStart,0,_,_,qStart,0,_,_,>,-,-
 qStart,1,_,_,qStart1,1,_,_,>,-,-
 qStart1,0,_,_,qStart,0,_,_,>,-,-
@@ -24,193 +26,151 @@ qStartClear11,1,_,_,qStartBack,_,_,_,<,-,-
 
 qStartBack,0,_,_,qStartBack,0,_,_,<,-,-
 qStartBack,1,_,_,qStartBack,1,_,_,<,-,-
-qStartBack,_,_,_,qFindState,_,_,0,>,>,-
+qStartBack,_,_,_,qFind,_,_,0,>,>,-
 
-# Try to find transition
-qFindState,0,_,0,qFindState,0,_,0,>,-,>
-qFindState,0,0,0,qFindState,0,0,0,>,-,>
-qFindState,0,1,0,qFindState,0,1,0,>,-,>
+# Try to find an available transition
 
-qFindState,0,_,_,qFindNextState,0,_,_,>,-,-
-qFindState,0,0,_,qFindNextState,0,0,_,>,-,-
-qFindState,0,1,_,qFindNextState,0,1,_,>,-,-
+qFind,0,_,0,qFind,0,_,0,>,-,>
+qFind,0,0,0,qFind,0,0,0,>,-,>
+qFind,0,1,0,qFind,0,1,0,>,-,>
+qFind,0,_,_,qFindNext,0,_,_,>,-,-
+qFind,0,0,_,qFindNext,0,0,_,>,-,-
+qFind,0,1,_,qFindNext,0,1,_,>,-,-
+qFind,1,_,0,qFindEnd,1,_,0,>,-,>
+qFind,1,0,0,qFindEnd,1,0,0,>,-,>
+qFind,1,1,0,qFindEnd,1,1,0,>,-,>
+qFind,1,_,_,qFindRead,1,_,_,>,-,-
+qFind,1,0,_,qFindRead,1,0,_,>,-,-
+qFind,1,1,_,qFindRead,1,1,_,>,-,-
 
-qFindState,1,_,0,qFindNextState,1,_,0,>,-,-
-qFindState,1,0,0,qFindNextState,1,0,0,>,-,-
-qFindState,1,1,0,qFindNextState,1,1,0,>,-,-
+qFindEnd,0,_,0,qFindEnd,0,_,0,-,-,>
+qFindEnd,0,0,0,qFindEnd,0,0,0,-,-,>
+qFindEnd,0,1,0,qFindEnd,0,1,0,-,-,>
+qFindEnd,0,_,_,qFindNext,0,_,_,-,-,-
+qFindEnd,0,0,_,qFindNext,0,0,_,-,-,-
+qFindEnd,0,1,_,qFindNext,0,1,_,-,-,-
 
-qFindState,1,_,_,qFindRead,1,_,_,>,-,-
-qFindState,1,0,_,qFindRead,1,0,_,>,-,-
-qFindState,1,1,_,qFindRead,1,1,_,>,-,-
+qFindRead,0,_,_,qFindRead0,0,_,_,>,-,-
+qFindRead,0,0,_,qFindRead0,0,0,_,>,-,-
+qFindRead,0,1,_,qFindRead0,0,1,_,>,-,-
+qFindRead0,0,_,_,qFindRead00,0,_,_,>,-,-
+qFindRead0,0,0,_,qFindRead00,0,0,_,>,-,-
+qFindRead0,0,1,_,qFindRead00,0,1,_,>,-,-
+qFindRead0,1,_,_,qFindNext,1,_,_,>,-,-
+qFindRead0,1,0,_,qUpdateState,1,0,_,>,-,<
+qFindRead0,1,1,_,qFindNext,1,1,_,>,-,-
+qFindRead00,0,_,_,qFindRead000,0,_,_,>,-,-
+qFindRead00,0,0,_,qFindRead000,0,0,_,>,-,-
+qFindRead00,0,1,_,qFindRead000,0,1,_,>,-,-
+qFindRead00,1,_,_,qFindNext,1,_,_,>,-,-
+qFindRead00,1,0,_,qFindNext,1,0,_,>,-,-
+qFindRead00,1,1,_,qUpdateState,1,1,_,>,-,<
+qFindRead000,1,_,_,qUpdateState,1,_,_,>,-,<
+qFindRead000,1,0,_,qFindNext,1,0,_,>,-,-
+qFindRead000,1,1,_,qFindNext,1,1,_,>,-,-
 
-###################
+qUpdateState,0,_,0,qUpdateState,0,_,_,-,-,<
+qUpdateState,0,0,0,qUpdateState,0,0,_,-,-,<
+qUpdateState,0,1,0,qUpdateState,0,1,_,-,-,<
+qUpdateState,0,_,_,qStateCopy,0,_,_,-,-,>
+qUpdateState,0,0,_,qStateCopy,0,0,_,-,-,>
+qUpdateState,0,1,_,qStateCopy,0,1,_,-,-,>
 
-# Try to find the state of the second tape
-# qFindState,0,1,0,qFindState,0,1,0,>,-,>
-# qFindState,0,0,0,qFindState,0,0,0,>,-,>
-# qFindState,0,_,0,qFindState,0,_,0,>,-,>
+qStateCopy,0,_,_,qStateCopy,0,_,0,>,-,>
+qStateCopy,0,0,_,qStateCopy,0,0,0,>,-,>
+qStateCopy,0,1,_,qStateCopy,0,1,0,>,-,>
+qStateCopy,1,_,_,qUpdateValue,1,_,_,>,-,-
+qStateCopy,1,0,_,qUpdateValue,1,0,_,>,-,-
+qStateCopy,1,1,_,qUpdateValue,1,1,_,>,-,-
 
-# qFindState,1,0,_,qStateFound,1,0,_,>,-,<
-# qFindState,1,1,_,qStateFound,1,1,_,>,-,<
-# qFindState,1,_,_,qStateFound,1,_,_,>,-,<
+qUpdateValue,0,_,_,qUpdateValue0,0,_,_,>,-,-
+qUpdateValue,0,0,_,qUpdateValue0,0,0,_,>,-,-
+qUpdateValue,0,1,_,qUpdateValue0,0,1,_,>,-,-
+qUpdateValue0,0,_,_,qUpdateValue00,0,_,_,>,-,-
+qUpdateValue0,0,0,_,qUpdateValue00,0,0,_,>,-,-
+qUpdateValue0,0,1,_,qUpdateValue00,0,1,_,>,-,-
+qUpdateValue0,1,_,_,qMove,1,0,_,>,-,-
+qUpdateValue0,1,0,_,qMove,1,0,_,>,-,-
+qUpdateValue0,1,1,_,qMove,1,0,_,>,-,-
+qUpdateValue00,0,_,_,qUpdateValue000,0,_,_,>,-,-
+qUpdateValue00,0,0,_,qUpdateValue000,0,0,_,>,-,-
+qUpdateValue00,0,1,_,qUpdateValue000,0,1,_,>,-,-
+qUpdateValue00,1,_,_,qMove,1,1,_,>,-,-
+qUpdateValue00,1,0,_,qMove,1,1,_,>,-,-
+qUpdateValue00,1,1,_,qMove,1,1,_,>,-,-
+qUpdateValue000,1,_,_,qMove,1,_,_,>,-,-
+qUpdateValue000,1,0,_,qMove,1,_,_,>,-,-
+qUpdateValue000,1,1,_,qMove,1,_,_,>,-,-
 
-# qStateFound,0,0,0,qStateFound,0,0,0,-,-,<
-# qStateFound,1,0,0,qStateFound,1,0,0,-,-,<
-# qStateFound,0,1,0,qStateFound,0,1,0,-,-,<
-# qStateFound,1,1,0,qStateFound,1,1,0,-,-,<
-# qStateFound,0,_,0,qStateFound,0,_,0,-,-,<
-# qStateFound,1,_,0,qStateFound,1,_,0,-,-,<
+qMove,0,_,_,qMove0,0,_,_,>,-,-
+qMove,0,0,_,qMove0,0,0,_,>,-,-
+qMove,0,1,_,qMove0,0,1,_,>,-,-
+qMove0,0,_,_,qMove00,0,_,_,>,-,-
+qMove0,0,0,_,qMove00,0,0,_,>,-,-
+qMove0,0,1,_,qMove00,0,1,_,>,-,-
+qMove0,1,_,_,qMoveBack,1,_,_,>,<,-
+qMove0,1,0,_,qMoveBack,1,0,_,>,<,-
+qMove0,1,1,_,qMoveBack,1,1,_,>,<,-
+qMove0,_,_,_,qMoveBack,_,_,_,<,<,-
+qMove0,_,0,_,qMoveBack,_,0,_,<,<,-
+qMove0,_,1,_,qMoveBack,_,1,_,<,<,-
+qMove00,1,_,_,qMoveBack,1,_,_,>,>,-
+qMove00,1,0,_,qMoveBack,1,0,_,>,>,-
+qMove00,1,1,_,qMoveBack,1,1,_,>,>,-
+qMove00,_,_,_,qMoveBack,1,_,_,<,>,-
+qMove00,_,0,_,qMoveBack,1,0,_,<,>,-
+qMove00,_,1,_,qMoveBack,1,1,_,<,>,-
 
-# qStateFound,0,0,_,qReading0,0,0,_,>,-,-
-# qStateFound,0,1,_,qReading0,0,1,_,>,-,-
-# qStateFound,0,_,_,qReading0,0,_,_,>,-,-
+qMoveBack,1,_,_,qMoveBack,1,_,_,<,-,-
+qMoveBack,1,0,_,qMoveBack,1,0,_,<,-,-
+qMoveBack,1,1,_,qMoveBack,1,1,_,<,-,-
+qMoveBack,0,_,_,qMoveBack,0,_,_,<,-,-
+qMoveBack,0,0,_,qMoveBack,0,0,_,<,-,-
+qMoveBack,0,1,_,qMoveBack,0,1,_,<,-,-
+qMoveBack,_,_,_,qMoveBackState,_,_,_,-,-,<
+qMoveBack,_,0,_,qMoveBackState,_,0,_,-,-,<
+qMoveBack,_,1,_,qMoveBackState,_,1,_,-,-,<
 
-# qReading0,0,0,_,qReading00,0,0,_,>,-,-
-# qReading0,0,1,_,qReading00,0,1,_,>,-,-
-# qReading0,0,_,_,qReading00,0,_,_,>,-,-
+qMoveBackState,_,_,0,qMoveBackState,_,_,0,-,-,<
+qMoveBackState,_,0,0,qMoveBackState,_,0,0,-,-,<
+qMoveBackState,_,1,0,qMoveBackState,_,1,0,-,-,<
+qMoveBackState,_,_,_,qFind,_,_,_,>,-,>
+qMoveBackState,_,0,_,qFind,_,0,_,>,-,>
+qMoveBackState,_,1,_,qFind,_,1,_,>,-,>
 
-# qReading0,1,_,_,qBackState,1,_,_,>,-,-
-# qReading0,1,0,_,qWrightState,1,0,_,>,-,-
-# qReading0,1,1,_,qBackState,1,1,_,>,-,-
+qFindNext,0,_,_,qFindNext,0,_,_,>,-,-
+qFindNext,0,0,_,qFindNext,0,0,_,>,-,-
+qFindNext,0,1,_,qFindNext,0,1,_,>,-,-
+qFindNext,1,_,_,qFindNext1,1,_,_,>,-,-
+qFindNext,1,0,_,qFindNext1,1,0,_,>,-,-
+qFindNext,1,1,_,qFindNext1,1,1,_,>,-,-
+qFindNext,_,_,_,qEnd,_,_,_,-,-,<
+qFindNext,_,0,_,qEnd,_,0,_,-,-,<
+qFindNext,_,1,_,qEnd,_,1,_,-,-,<
+qFindNext1,0,_,_,qFindNext,0,_,_,>,-,-
+qFindNext1,0,0,_,qFindNext,0,0,_,>,-,-
+qFindNext1,0,1,_,qFindNext,0,1,_,>,-,-
+qFindNext1,1,_,_,qFindBack,1,_,_,-,-,<
+qFindNext1,1,0,_,qFindBack,1,0,_,-,-,<
+qFindNext1,1,1,_,qFindBack,1,1,_,-,-,<
 
-# qReading00,0,0,_,qReading000,0,0,_,>,-,-
-# qReading00,0,1,_,qReading000,0,1,_,>,-,-
-# qReading00,0,_,_,qReading000,0,_,_,>,-,-
+qFindBack,1,_,0,qFindBack,1,_,0,-,-,<
+qFindBack,1,0,0,qFindBack,1,0,0,-,-,<
+qFindBack,1,1,0,qFindBack,1,1,0,-,-,<
+qFindBack,1,_,_,qFind,1,_,_,>,-,>
+qFindBack,1,0,_,qFind,1,0,_,>,-,>
+qFindBack,1,1,_,qFind,1,1,_,>,-,>
 
-# qReading00,1,_,_,qBackState,1,_,_,>,-,-
-# qReading00,1,0,_,qBackState,1,0,_,>,-,-
-# qReading00,1,1,_,qWrightState,1,1,_,>,-,-
+# Posprocessing
 
-# qReading000,1,_,_,qWrightState,1,_,_,>,-,-
-# qReading000,1,0,_,qBackState,1,0,_,>,-,-
-# qReading000,1,1,_,qBackState,1,1,_,>,-,-
+qEnd,_,_,0,qEnd0,_,_,0,-,-,<
+qEnd,_,0,0,qEnd0,_,0,0,-,-,<
+qEnd,_,1,0,qEnd0,_,1,0,-,-,<
 
-# qWrightState,0,0,_,qClearState,0,0,_,-,-,>
-# qWrightState,0,1,_,qClearState,0,1,_,-,-,>
-# qWrightState,0,_,_,qClearState,0,_,_,-,-,>
+qEnd0,_,_,0,qEnd00,_,_,0,-,-,<
+qEnd0,_,0,0,qEnd00,_,0,0,-,-,<
+qEnd0,_,1,0,qEnd00,_,1,0,-,-,<
 
-# qClearState,0,0,0,qClearState,0,0,0,-,-,>
-# qClearState,0,1,0,qClearState,0,1,0,-,-,>
-# qClearState,0,_,0,qClearState,0,_,0,-,-,>
-
-# qClearState,0,0,_,qCleaningState,0,0,_,-,-,<
-# qClearState,0,1,_,qCleaningState,0,1,_,-,-,<
-# qClearState,0,_,_,qCleaningState,0,_,_,-,-,<
-
-# qCleaningState,0,0,0,qCleaningState,0,0,_,-,-,<
-# qCleaningState,0,1,0,qCleaningState,0,1,_,-,-,<
-# qCleaningState,0,_,0,qCleaningState,0,_,_,-,-,<
-
-# qCleaningState,0,0,_,qWrightingState,0,0,_,-,-,>
-# qCleaningState,0,1,_,qWrightingState,0,1,_,-,-,>
-# qCleaningState,0,_,_,qWrightingState,0,_,_,-,-,>
-
-# qWrightingState,0,1,_,qWrightingState,0,1,0,>,-,>
-# qWrightingState,0,0,_,qWrightingState,0,0,0,>,-,>
-#qWrightingState,0,_,_,qWrightingState,0,_,0,>,-,>
-
-# qWrightingState,1,0,_,qWrightTape,1,0,_,>,-,-
-# qWrightingState,1,1,_,qWrightTape,1,1,_,>,-,-
-# qWrightingState,1,_,_,qWrightTape,1,_,_,>,-,-
-
-# qWrightTape,0,0,_,qWrightTape0,0,0,_,>,-,-
-# qWrightTape,0,1,_,qWrightTape0,0,1,_,>,-,-
-# qWrightTape,0,_,_,qWrightTape0,0,_,_,>,-,-
-
-# qWrightTape0,0,0,_,qWrightTape00,0,0,_,>,-,-
-# qWrightTape0,0,1,_,qWrightTape00,0,1,_,>,-,-
-# qWrightTape0,0,_,_,qWrightTape00,0,_,_,>,-,-
-
-# qWrightTape0,1,0,_,qDirectionTape,1,0,_,>,-,-
-# qWrightTape0,1,1,_,qDirectionTape,1,0,_,>,-,-
-# qWrightTape0,1,_,_,qDirectionTape,1,0,_,>,-,-
-
-# qWrightTape00,0,0,_,qWrightTape000,0,0,_,>,-,-
-# qWrightTape00,0,1,_,qWrightTape000,0,1,_,>,-,-
-# qWrightTape00,0,_,_,qWrightTape000,0,_,_,>,-,-
-
-# qWrightTape00,1,0,_,qDirectionTape,1,1,_,>,-,-
-# qWrightTape00,1,1,_,qDirectionTape,1,1,_,>,-,-
-# qWrightTape00,1,_,_,qDirectionTape,1,1,_,>,-,-
-
-# qWrightTape000,1,0,_,qDirectionTape,1,_,_,>,-,-
-# qWrightTape000,1,1,_,qDirectionTape,1,_,_,>,-,-
-# qWrightTape000,1,_,_,qDirectionTape,1,_,_,>,-,-
-
-# qDirectionTape,0,0,_,qDirectionTape0,0,0,_,>,-,-
-# qDirectionTape,0,1,_,qDirectionTape0,0,1,_,>,-,-
-# qDirectionTape,0,_,_,qDirectionTape0,0,_,_,>,-,-
-
-# qDirectionTape0,0,0,_,qDirectionTape00,0,0,_,>,-,-
-# qDirectionTape0,0,1,_,qDirectionTape00,0,1,_,>,-,-
-# qDirectionTape0,0,_,_,qDirectionTape00,0,_,_,>,-,-
-
-# qDirectionTape0,1,0,_,qDirectionTape1,1,0,_,>,<,-
-# qDirectionTape0,1,1,_,qDirectionTape1,1,1,_,>,<,-
-# qDirectionTape0,1,_,_,qDirectionTape1,1,_,_,>,<,-
-
-# qDirectionTape00,1,0,_,qRestartMachine,1,0,_,>,>,-
-# qDirectionTape00,1,1,_,qRestartMachine,1,1,_,>,>,-
-# qDirectionTape00,1,_,_,qRestartMachine,1,_,_,>,>,-
-
-# qRestartMachine,0,0,_,qRestartMachine,0,0,_,<,-,-
-# qRestartMachine,0,1,_,qRestartMachine,0,1,_,<,-,-
-# qRestartMachine,0,_,_,qRestartMachine,0,_,_,<,-,-
-# qRestartMachine,1,0,_,qRestartMachine,1,0,_,<,-,-
-# qRestartMachine,1,1,_,qRestartMachine,1,1,_,<,-,-
-# qRestartMachine,1,_,_,qRestartMachine,1,_,_,<,-,-
-
-# qRestartMachine,_,0,_,qRestartState,_,0,_,-,-,<
-# qRestartMachine,_,1,_,qRestartState,_,1,_,-,-,<
-# qRestartMachine,_,_,_,qRestartState,_,1,_,-,-,<
-
-# qRestartState,_,0,0,qRestartState,_,0,0,-,-,<
-# qRestartState,_,1,0,qRestartState,_,1,0,-,-,<
-# qRestartState,_,_,0,qRestartState,_,_,0,-,-,<
-
-# qRestartState,_,0,_,qFindState,_,0,_,>,-,>
-# qRestartState,_,1,_,qFindState,_,1,_,>,-,>
-# qRestartState,_,_,_,qFindState,_,_,_,>,-,>
-
-# Not found, so we need to go back the third tape
-# qFindState,1,0,0,qBackState,1,0,0,-,-,<
-# qFindState,0,0,_,qBackState,0,0,_,-,-,<
-# qFindState,1,1,0,qBackState,1,1,0,-,-,<
-# qFindState,0,1,_,qBackState,0,1,_,-,-,<
-# qFindState,1,_,0,qBackState,1,_,0,-,-,<
-# qFindState,0,_,_,qBackState,0,_,_,-,-,<
-
-# qBackState,0,0,0,qBackState,0,0,0,-,-,<
-# qBackState,1,0,0,qBackState,1,0,0,-,-,<
-# qBackState,0,1,0,qBackState,0,1,0,-,-,<
-# qBackState,1,1,0,qBackState,1,1,0,-,-,<
-# qBackState,0,_,0,qBackState,0,_,0,-,-,<
-# qBackState,1,_,0,qBackState,1,_,0,-,-,<
-
-# Now we can find the next state
-# qBackState,0,0,_,qFindNextState,0,0,_,-,-,>
-# qBackState,1,0,_,qFindNextState,1,0,_,-,-,>
-# qBackState,0,1,_,qFindNextState,0,1,_,-,-,>
-# qBackState,1,1,_,qFindNextState,1,1,_,-,-,>
-# qBackState,0,_,_,qFindNextState,0,_,_,-,-,>
-# qBackState,1,_,_,qFindNextState,1,_,_,-,-,>
-
-# qFindNextState,0,0,0,qFindNextState,0,0,0,>,-,-
-# qFindNextState,0,1,0,qFindNextState,0,1,0,>,-,-
-# qFindNextState,0,_,0,qFindNextState,0,_,0,>,-,-
-
-# qFindNextState,1,0,0,qFind1,1,0,0,>,-,-
-# qFindNextState,1,1,0,qFind1,1,1,0,>,-,-
-# qFindNextState,1,_,0,qFind1,1,_,0,>,-,-
-
-# qFindNextState,_,0,_,qFinalize,_,0,_,-,-,-
-# qFindNextState,_,1,_,qFinalize,_,1,_,-,-,-
-# qFindNextState,_,_,_,qFinalize,_,_,_,-,-,-
-
-# qFind1,0,0,0,qFindNextState,0,0,0,>,-,-
-# qFind1,0,1,0,qFindNextState,0,1,0,>,-,-
-# qFind1,0,_,0,qFindNextState,0,_,0,>,-,-
-
-# qFind1,1,0,0,qFindState,1,0,0,>,-,-
-# qFind1,1,1,0,qFindState,1,1,0,>,-,-
-# qFind1,1,_,0,qFindState,1,_,0,>,-,-
+qEnd00,_,_,_,qAccept,_,_,_,-,-,-
+qEnd00,_,0,_,qAccept,_,0,_,-,-,-
+qEnd00,_,1,_,qAccept,_,1,_,-,-,-
