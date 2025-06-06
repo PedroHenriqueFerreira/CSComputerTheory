@@ -14,11 +14,26 @@ BLOCK_FONT_COLOR = '#d8dee9'
 BLOCK_FAIL_COLOR = '#d07087'
 BLOCK_SUCESS_COLOR = '#8fbcbb'
 
-MOVE_SIZE = 66 # Pixels que sera movido a cada passo
-MOVE_DELAY = 0 # Delay em milissegundos
-
-INITIAL_DELAY = 500 # Delay inicial antes de comecar a rodar a maquina
-STEP_DELAY = 20 # Delay entre cada passo da maquina
+MODE = {
+    'fast': {
+        'MOVE_SIZE': 66, # Pixels que sera movido a cada passo
+        'MOVE_DELAY': 0, # Delay em milissegundos
+        'STEP_DELAY': 8, # Delay entre cada passo da maquina
+        'INITIAL_DELAY': 1000 # Delay inicial antes de comecar a rodar a maquina 
+    },
+    'normal': {
+        'MOVE_SIZE': 6, # Pixels que sera movido a cada passo   
+        'MOVE_DELAY': 16, # Delay em milissegundos
+        'STEP_DELAY': 16, # Delay entre cada passo da maquina
+        'INITIAL_DELAY': 1000 # Delay inicial antes de comecar a rodar a maquina 
+    },
+    'slow': {
+        'MOVE_SIZE': 6, # Pixels que sera movido a cada passo
+        'MOVE_DELAY': 32, # Delay em milissegundos
+        'STEP_DELAY': 96, # Delay entre cada passo da maquina
+        'INITIAL_DELAY': 1000 # Delay inicial antes de comecar a rodar a maquina 
+    }
+}
 
 POINTER_WIDTH = BLOCK_SIZE / 2
 POINTER_HEIGHT = BLOCK_SIZE / 3
@@ -174,8 +189,9 @@ class Tape:
             block.move(direction) 
     
 class UI:
-    def __init__(self, machine: Machine):
+    def __init__(self, machine: Machine, mode: str = 'fast'):
         self.machine = machine
+        self.mode = mode
         
         self.root = Tk()
         self.root.resizable(False, False)
@@ -189,7 +205,7 @@ class UI:
             
             self.tapes.append(Tape(canvas, self.machine, i))
     
-        self.root.after(INITIAL_DELAY, self.step)
+        self.root.after(MODE[mode]['INITIAL_DELAY'], self.step)
         self.root.mainloop()
     
     def success(self):
@@ -223,8 +239,8 @@ class UI:
                 if direction == 0:
                     continue
                 
-                for i in range((BLOCK_SIZE + BLOCK_PADDING) // MOVE_SIZE):
-                    tape.canvas.after((i + 1) * MOVE_DELAY, tape.move, MOVE_SIZE * direction)
+                for i in range((BLOCK_SIZE + BLOCK_PADDING) // MODE[self.mode]['MOVE_SIZE']):
+                    tape.canvas.after((i + 1) * MODE[self.mode]['MOVE_DELAY'], tape.move, MODE[self.mode]['MOVE_SIZE'] * direction)
                 
-            self.root.after((i + 1) * MOVE_DELAY + STEP_DELAY, self.step)
+            self.root.after((i + 1) * MODE[self.mode]['MOVE_DELAY'] + MODE[self.mode]['STEP_DELAY'], self.step)
     

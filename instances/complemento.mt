@@ -1,4 +1,4 @@
-tape 101100
+tape 10101
 init q0
 accept qf
 

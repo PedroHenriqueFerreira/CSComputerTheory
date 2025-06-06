@@ -5,13 +5,15 @@ from UI import UI
 
 from sys import argv
 
-def read(n_tapes: int, instance: str): # Lê de arquivo
+def read(instance: str, mode: str): # Lê de arquivo
     print(f" Instancia {instance} ".center(50, '*'))
     
     q = None
     tape = ''
     
     states: dict[str, State] = {}
+    
+    n_tapes = -1
     
     with open(instance) as file:
         for line in file.readlines():
@@ -32,6 +34,11 @@ def read(n_tapes: int, instance: str): # Lê de arquivo
             else:
                 values = data[0].split(',')
                 
+                if n_tapes == -1:
+                    n_tapes = (len(values) - 2) // 3
+                elif n_tapes != (len(values) - 2) // 3:
+                    raise Exception('Invalid instance or inconsistent')
+                
                 qi = values[0]
                 r = values[1:n_tapes + 1]
                 qj = values[n_tapes + 1]
@@ -46,7 +53,7 @@ def read(n_tapes: int, instance: str): # Lê de arquivo
                     
                 states[qi].addTransition(states[qj], r, w, d)
     
-    UI(Machine(q, tape, n_tapes=n_tapes, size=200, blank='_'))
+    UI(Machine(q, tape, n_tapes=n_tapes, size=500, blank='_'), mode=mode)
 
 def teste_anbn(w: str): # Livre de contexto
     print("{ a^nb^n | n>=0 }")
@@ -80,9 +87,6 @@ def teste_anbn(w: str): # Livre de contexto
 
     mt = Machine(q0, w, n_tapes=1, size=20, blank='_')
     
-    print(mt.tapes)
-    print(mt.positions)
-    
     mt.run()
 
 def teste_y_x(w: str): # Regular
@@ -107,7 +111,7 @@ def teste_y_x(w: str): # Regular
 
 if __name__ == "__main__":
     if len(argv) > 1:
-        read(int(argv[1]), argv[2])
+        read(argv[1], argv[2])
     else:
         teste_anbn('')
         teste_anbn('ab')
