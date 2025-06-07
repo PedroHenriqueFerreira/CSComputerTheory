@@ -8,7 +8,7 @@ from string import printable
 
 chars = [char for char in printable.strip() if char not in ('@', '&', ',')]
 
-def read(instance: str, mode: str): # Lê de arquivo
+def read(instance: str, size: int, mode: str): # Lê de arquivo
     print(f" Instancia {instance} ".center(50, '*'))
     
     q = None
@@ -40,7 +40,7 @@ def read(instance: str, mode: str): # Lê de arquivo
                 if n_tapes == -1:
                     n_tapes = (len(values) - 2) // 3
                 elif n_tapes != (len(values) - 2) // 3:
-                    raise Exception('Invalid instance or inconsistent')
+                    raise Exception(f'Invalid instance or inconsistent: {line.strip()}')
                 
                 qi = values[0]
                 r = values[1:n_tapes + 1]
@@ -81,7 +81,7 @@ def read(instance: str, mode: str): # Lê de arquivo
                 else:
                     states[qi].addTransition(states[qj], r, w, d)
     
-    UI(Machine(q, tape, n_tapes=n_tapes, size=1000, blank='_'), mode=mode)
+    UI(Machine(q, tape, n_tapes=n_tapes, size=size), mode=mode)
 
 def teste_anbn(w: str): # Livre de contexto
     print("{ a^nb^n | n>=0 }")
@@ -139,7 +139,7 @@ def teste_y_x(w: str): # Regular
 
 if __name__ == "__main__":
     if len(argv) > 1:
-        read(argv[1], argv[2] if len(argv) == 3 else 'normal')
+        read(argv[1], int(argv[2]) if len(argv) >= 3 else 100, argv[3] if len(argv) >= 4 else 'normal')
     else:
         teste_anbn('')
         teste_anbn('ab')

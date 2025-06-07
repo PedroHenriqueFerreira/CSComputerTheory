@@ -1,6 +1,5 @@
 tape 10010
 init q0
-accept q0
 accept qf
 
 q0,0,q1,0,>
