@@ -81,6 +81,12 @@ def read(instance: str, size: int, mode: str): # Lê de arquivo
                 else:
                     states[qi].addTransition(states[qj], r, w, d)
     
+    if size == -1:
+        size = len(tape)
+    
+    if mode == '':
+        mode = 'normal'
+        
     UI(Machine(q, tape, n_tapes=n_tapes, size=size), mode=mode)
 
 def teste_anbn(w: str): # Livre de contexto
@@ -139,7 +145,7 @@ def teste_y_x(w: str): # Regular
 
 if __name__ == "__main__":
     if len(argv) > 1:
-        read(argv[1], int(argv[2]) if len(argv) >= 3 else 100, argv[3] if len(argv) >= 4 else 'normal')
+        read(argv[1], int(argv[2]) if len(argv) >= 3 else -1, argv[3] if len(argv) >= 4 else '')
     else:
         teste_anbn('')
         teste_anbn('ab')
