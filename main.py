@@ -8,8 +8,6 @@ from string import printable
 
 chars = [char for char in printable.strip() if char not in ('@', '&', ',')]
 
-print(chars)
-
 def read(instance: str, mode: str): # Lê de arquivo
     print(f" Instancia {instance} ".center(50, '*'))
     
@@ -83,7 +81,7 @@ def read(instance: str, mode: str): # Lê de arquivo
                 else:
                     states[qi].addTransition(states[qj], r, w, d)
     
-    UI(Machine(q, tape, n_tapes=n_tapes, size=500, blank='_'), mode=mode)
+    UI(Machine(q, tape, n_tapes=n_tapes, size=1000, blank='_'), mode=mode)
 
 def teste_anbn(w: str): # Livre de contexto
     print("{ a^nb^n | n>=0 }")
