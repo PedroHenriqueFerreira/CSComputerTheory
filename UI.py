@@ -15,22 +15,28 @@ BLOCK_FAIL_COLOR = '#d07087'
 BLOCK_SUCESS_COLOR = '#8fbcbb'
 
 MODE = {
+    'real': {
+        'MOVE_SIZE': 66, # Pixels que sera movido a cada passo
+        'MOVE_DELAY': 0, # Delay em milissegundos
+        'STEP_DELAY': 0, # Delay entre cada passo da maquina
+        'INITIAL_DELAY': 1000 # Delay inicial antes de comecar a rodar a maquina
+    },
     'fast': {
         'MOVE_SIZE': 66, # Pixels que sera movido a cada passo
-        'MOVE_DELAY': 8, # Delay em milissegundos
-        'STEP_DELAY': 8, # Delay entre cada passo da maquina
+        'MOVE_DELAY': 20, # Delay em milissegundos
+        'STEP_DELAY': 0, # Delay entre cada passo da maquina
         'INITIAL_DELAY': 1000 # Delay inicial antes de comecar a rodar a maquina 
     },
     'normal': {
         'MOVE_SIZE': 6, # Pixels que sera movido a cada passo   
-        'MOVE_DELAY': 16, # Delay em milissegundos
-        'STEP_DELAY': 16, # Delay entre cada passo da maquina
+        'MOVE_DELAY': 20, # Delay em milissegundos
+        'STEP_DELAY': 0, # Delay entre cada passo da maquina
         'INITIAL_DELAY': 1000 # Delay inicial antes de comecar a rodar a maquina 
     },
     'slow': {
-        'MOVE_SIZE': 6, # Pixels que sera movido a cada passo
-        'MOVE_DELAY': 32, # Delay em milissegundos
-        'STEP_DELAY': 96, # Delay entre cada passo da maquina
+        'MOVE_SIZE': 3, # Pixels que sera movido a cada passo
+        'MOVE_DELAY': 20, # Delay em milissegundos
+        'STEP_DELAY': 200, # Delay entre cada passo da maquina
         'INITIAL_DELAY': 1000 # Delay inicial antes de comecar a rodar a maquina 
     }
 }
