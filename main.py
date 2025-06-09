@@ -84,7 +84,7 @@ def read(instance: str, mode: str): # Lê de arquivo
     if mode == '':
         mode = 'normal'
         
-    UI(Machine(q, tape, n_tapes=n_tapes, size=len(tape)), mode=mode)
+    UI(Machine(q, tape, n_tapes=n_tapes, size=len(tape) + 100), mode=mode)
 
 def teste_anbn(w: str): # Livre de contexto
     print("{ a^nb^n | n>=0 }")
