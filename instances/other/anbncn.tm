@@ -1,4 +1,4 @@
-tape aaabbbcc
+tape aabbcc
 init q0
 accept qf
 
@@ -16,7 +16,6 @@ q2,B,q2,B,<
 q2,b,q2,b,<
 q2,C,q2,C,<
 q2,A,q0,A,>
-
 q4,B,q4,B,>
 q4,C,q4,C,>
 q4,_,q3,_,<
