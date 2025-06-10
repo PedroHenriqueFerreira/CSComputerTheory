@@ -14,30 +14,28 @@ BLOCK_FONT_COLOR = '#d8dee9'
 BLOCK_FAIL_COLOR = '#d07087'
 BLOCK_SUCESS_COLOR = '#8fbcbb'
 
+INITIAL_DELAY = 1000 # Delay inicial antes de comecar a rodar a maquina 
+
 MODE = {
     'real': {
         'MOVE_SIZE': 66, # Pixels que sera movido a cada passo
-        'MOVE_DELAY': 0, # Delay em milissegundos
+        'MOVE_DELAY': 1, # Delay em milissegundos
         'STEP_DELAY': 0, # Delay entre cada passo da maquina
-        'INITIAL_DELAY': 1000 # Delay inicial antes de comecar a rodar a maquina
     },
     'fast': {
         'MOVE_SIZE': 66, # Pixels que sera movido a cada passo
-        'MOVE_DELAY': 20, # Delay em milissegundos
+        'MOVE_DELAY': 30, # Delay em milissegundos
         'STEP_DELAY': 0, # Delay entre cada passo da maquina
-        'INITIAL_DELAY': 1000 # Delay inicial antes de comecar a rodar a maquina 
     },
     'normal': {
         'MOVE_SIZE': 6, # Pixels que sera movido a cada passo   
-        'MOVE_DELAY': 20, # Delay em milissegundos
-        'STEP_DELAY': 0, # Delay entre cada passo da maquina
-        'INITIAL_DELAY': 1000 # Delay inicial antes de comecar a rodar a maquina 
+        'MOVE_DELAY': 30, # Delay em milissegundos
+        'STEP_DELAY': 30, # Delay entre cada passo da maquina
     },
     'slow': {
         'MOVE_SIZE': 3, # Pixels que sera movido a cada passo
-        'MOVE_DELAY': 20, # Delay em milissegundos
+        'MOVE_DELAY': 30, # Delay em milissegundos
         'STEP_DELAY': 200, # Delay entre cada passo da maquina
-        'INITIAL_DELAY': 1000 # Delay inicial antes de comecar a rodar a maquina 
     }
 }
 
@@ -145,12 +143,9 @@ class Tape:
         self.draw()
         
     def start(self):
-        tape = self.machine.tapes[self.i]
         position = self.machine.positions[self.i]
         
-        total_width = len(tape) * BLOCK_SIZE + (len(tape) - 1) * BLOCK_PADDING
-    
-        self.x = (CANVAS_WIDTH - total_width) / 2
+        self.x = CANVAS_WIDTH / 2
         self.y = (CANVAS_HEIGHT - BLOCK_SIZE) / 2
         
         self.x0 = self.x + position * (BLOCK_SIZE + BLOCK_PADDING) + BLOCK_SIZE / 2
@@ -173,6 +168,26 @@ class Tape:
             
         self.pointer = Pointer(self.canvas, self.x0, self.pointer_y)
         self.state = State(self.canvas, self.machine.q.name, self.x0, self.state_y)
+
+    def add_block_left(self):
+        x = self.canvas.coords(self.blocks[0].rectangle)[0]
+        
+        self.blocks.insert(0, Block(
+            self.canvas,
+            x - BLOCK_SIZE - BLOCK_PADDING,
+            self.y,
+            self.machine.blank
+        ))
+        
+    def add_block_right(self):    
+        x = self.canvas.coords(self.blocks[-1].rectangle)[0]
+        
+        self.blocks.append(Block(
+            self.canvas,
+            x + BLOCK_SIZE + BLOCK_PADDING,
+            self.y,
+            self.machine.blank
+        ))
 
     def success(self):
         for block in self.blocks:
@@ -211,9 +226,6 @@ class UI:
             
             self.tapes.append(Tape(canvas, self.machine, i))
     
-        self.root.after(MODE[mode]['INITIAL_DELAY'], self.step)
-        self.root.mainloop()
-    
     def success(self):
         for tape in self.tapes:
             tape.success()
@@ -222,31 +234,50 @@ class UI:
         for tape in self.tapes:
             tape.fail()
     
+    def run(self):
+        self.root.after(INITIAL_DELAY, self.step)
+        
+        self.root.mainloop()
+    
     def step(self):
         prev_positions = self.machine.positions.copy()
         has_next = self.machine.run_step()
         next_positions = self.machine.positions.copy()
         
-        directions = [prev - next for prev, next in zip(prev_positions, next_positions)]
+        directions = [next - prev for prev, next in zip(prev_positions, next_positions)]
             
         for tape in self.tapes:
             tape.state.rename(self.machine.q.name)
             
         for i in range(self.machine.n_tapes):
+            if directions[i] == 1 and len(self.tapes[i].blocks) != len(self.machine.tapes[i]):
+                self.tapes[i].add_block_right()
+                
+            elif directions[i] == 0 and len(self.tapes[i].blocks) != len(self.machine.tapes[i]):
+                self.tapes[i].add_block_left()
+                
+                directions[i] = -1
+            
             self.tapes[i].blocks[prev_positions[i]].rename(self.machine.tapes[i][prev_positions[i]])
         
-        if not has_next:
-            if self.machine.q.isFinal:
-                self.success()
-            else:
-                self.fail()
-        else:
+        if has_next:
             for tape, direction in zip(self.tapes, directions):
                 if direction == 0:
                     continue
                 
                 for i in range((BLOCK_SIZE + BLOCK_PADDING) // MODE[self.mode]['MOVE_SIZE']):
-                    tape.canvas.after((i + 1) * MODE[self.mode]['MOVE_DELAY'], tape.move, MODE[self.mode]['MOVE_SIZE'] * direction)
+                    tape.canvas.after(
+                        (i + 1) * MODE[self.mode]['MOVE_DELAY'], 
+                        tape.move, 
+                        MODE[self.mode]['MOVE_SIZE'] * direction * -1
+                    )
                 
-            self.root.after((i + 1) * MODE[self.mode]['MOVE_DELAY'] + MODE[self.mode]['STEP_DELAY'], self.step)
-    
+            self.root.after(
+                (i + 1) * MODE[self.mode]['MOVE_DELAY'] + MODE[self.mode]['STEP_DELAY'], 
+                self.step
+            )   
+        else:
+            if self.machine.q.isFinal:
+                self.success()
+            else:
+                self.fail()

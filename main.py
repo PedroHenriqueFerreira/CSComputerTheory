@@ -82,9 +82,9 @@ def read(instance: str, mode: str): # Lê de arquivo
                     states[qi].addTransition(states[qj], r, w, d)
     
     if mode == '':
-        mode = 'normal'
-        
-    UI(Machine(q, tape, n_tapes=n_tapes, size=len(tape) + 100), mode=mode)
+        Machine(q, tape, n_tapes=n_tapes).run()
+    else:
+        UI(Machine(q, tape, n_tapes=n_tapes), mode=mode).run()
 
 def teste_anbn(w: str): # Livre de contexto
     print("{ a^nb^n | n>=0 }")
