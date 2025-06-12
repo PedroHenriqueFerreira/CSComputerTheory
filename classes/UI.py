@@ -1,6 +1,6 @@
 from tkinter import Tk, Canvas
 
-from Machine import Machine
+from classes.machine import Machine
 
 CANVAS_WIDTH = 800
 CANVAS_HEIGHT = 200

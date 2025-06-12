@@ -1,5 +1,5 @@
-from Edge import Edge
-from Transition import Transition
+from classes.edge import Edge
+from classes.transition import Transition
 
 class State:
     def __init__(self, name: str):

@@ -1,8 +1,8 @@
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from State import State
-    from Edge import Edge
+    from classes.state import State
+    from classes.edge import Edge
 
 class Transition:
     def __init__(self, state: 'State', edge: 'Edge'):

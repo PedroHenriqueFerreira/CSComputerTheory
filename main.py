@@ -1,7 +1,7 @@
-from State import State
-from Machine import Machine
+from classes.state import State
+from classes.machine import Machine
 
-from UI import UI
+from classes.UI import UI
 
 from sys import argv
 from string import printable

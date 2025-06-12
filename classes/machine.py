@@ -1,4 +1,4 @@
-from State import State
+from classes.state import State
 
 class Machine: # AFD = (Q, Σ, δ, q0, F)
     def __init__(self, q: State, w: str, n_tapes: int = 1, blank: str = '_'):
