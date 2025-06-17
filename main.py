@@ -116,7 +116,7 @@ def teste_anbn(w: str): # Livre de contexto
     q3.addTransition(q3, 'B', 'B', 'E')
     q3.addTransition(qf, '_', '_', 'D')
 
-    mt = Machine(q0, w, n_tapes=1, size=20, blank='_')
+    mt = Machine(q0, w)
     
     mt.run()
 
@@ -137,7 +137,7 @@ def teste_y_x(w: str): # Regular
     q2.addTransition(q2, '1', 'b', 'D')
     q2.addTransition(q1, '0', 'a', 'D')
 
-    mt = Machine(q0, w, n_tapes=1, size=20, blank='_')
+    mt = Machine(q0, w)
     mt.run()
 
 if __name__ == "__main__":

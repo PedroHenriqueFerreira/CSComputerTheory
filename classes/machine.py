@@ -21,7 +21,7 @@ class Machine: # AFD = (Q, Σ, δ, q0, F)
 
     def create_tapes(self):
         for i in range(self.n_tapes):
-            if i == 0:
+            if i == 0 and len(self.w) > 0:
                 self.tapes.append([c for c in self.w])
             else:
                 self.tapes.append([self.blank])
